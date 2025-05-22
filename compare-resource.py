@@ -4,9 +4,9 @@ import pandas as pd
 import base64
 
 # Configuration
-CONTROL_PLANE_URL = "https://treebo-cp.console.facets.cloud"
-USERNAME = "abhisht.bagewadi@facets.cloud"
-TOKEN = "27052a70-e3a4-488d-8be8-f8ec2cf9d95c"
+CONTROL_PLANE_URL = ""
+USERNAME = "@facets.cloud"
+TOKEN = ""
 credentials = base64.b64encode(f"{USERNAME}:{TOKEN}".encode()).decode()
 HEADERS = {
     "Authorization": f"Basic {credentials}",
@@ -14,8 +14,8 @@ HEADERS = {
 }
 
 CLUSTERS = {
-       "s-7587-apse1-11": "62de1bdb96538000013f7adf",
-       "p-2621-aps1-01": "62e8e0edce29ec00014423cb"
+       "cluster_name": "cluster_id",
+       "cluster_name": "cluster_id"
 }
 
 def fetch_cluster_resources_info(cluster_id):
