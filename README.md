@@ -4,12 +4,15 @@ A Python-based tool for analyzing resources across Facets Cloud clusters. This t
 
 ## Features
 
-- Analyzes multiple resource types:
+### Resource Type Analysis
+- Comprehensive analysis of multiple resource types:
   - Normal resources
   - Provided resources
   - Base resources
   - Inherited resources
   - Substack resources
+
+### Report Generation
 - Generates formatted Excel reports with:
   - Resource counts by type
   - Environment grouping
@@ -17,139 +20,159 @@ A Python-based tool for analyzing resources across Facets Cloud clusters. This t
   - Resource inheritance tracking
   - Auto-filtered columns
   - Professional formatting with headers and borders
-- Dynamic column generation based on resource types present
-- Environment-based grouping with clear visual separation
-- Detailed resource type detection using metadata, labels, and annotations
+  - Dynamic column generation based on resource types present
+  - Environment-based grouping with clear visual separation
+  - Detailed resource type detection using metadata, labels, and annotations
+
+### Automatic Discovery
+- Automatic cluster discovery across multiple API endpoints
+- Dynamic column handling for Base and Substack resources
+- Support for all Facets Cloud customers
 
 ## Prerequisites
 
 - Python 3.6 or higher
 - Access to Facets Cloud Control Plane
 - Valid authentication credentials
+- Required Python packages:
+  ```
+  requests>=2.25.1
+  pandas>=1.2.0
+  openpyxl>=3.0.7
+  ```
 
 ## Installation
 
 1. Clone the repository:
-```bash
-git clone <repository-url>
-cd customer-analysis
-```
+   ```bash
+   git clone <repository-url>
+   cd customer-analysis
+   ```
 
 2. Create a virtual environment (recommended):
-```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-```
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
 
 3. Install required packages:
-```bash
-pip install -r requirements.txt
-```
-
-## Configuration
-
-Edit the configuration section in `resource_analysis.py` to set your environment details:
-
-```python
-config = {
-    'control_plane_url': "https://your-cp.console.facets.cloud",
-    'username': "your.username@facets.cloud",
-    'token': "your-token",
-    'customer_name': "CustomerName",
-    'clusters': {
-        "cluster-name": ("cluster-id", "display-name"),
-        # Add more clusters as needed
-    }
-}
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ## Usage
 
-1. Configure your credentials and cluster information in the script
-2. Run the analysis:
+### Command Line Interface
+Run the script using the following command:
 ```bash
-python resource_analysis.py
+python3 general_resource_comparison.py --url <control-plane-url> --username <username> --token <token>
 ```
 
-The script will:
-1. Connect to each configured cluster
-2. Analyze all resources
-3. Generate an Excel report named `<customer_name>_resource_analysis.xlsx`
+### Arguments
+- `--url`: Your Facets Cloud Control Plane URL (e.g., https://customer-cp.console.facets.cloud)
+- `--username`: Your Facets Cloud username
+- `--token`: Your authentication token
+
+### Example
+```bash
+python3 general_resource_comparison.py \
+  --url https://customer-cp.console.facets.cloud \
+  --username user@facets.cloud \
+  --token abc123def456
+```
 
 ## Output Format
 
-The generated Excel file includes:
-- Customer name
-- Environment details
-- Total resource counts
-- Resource type breakdowns
-- Resource status (enabled/disabled)
-- Resource categorization (normal/provided/base/inherited/substack)
+### File Naming
+The script generates an Excel file with the following format:
+```
+<customer>_resource_analysis_<timestamp>.xlsx
+```
+Example: `customer_resource_analysis_20240221_123456.xlsx`
 
-### Column Descriptions
+### Excel Report Structure
+The generated Excel report includes:
 
-- `Customer`: Name of the customer
-- `Environment`: Cluster environment name
-- `Total number of Resources`: Total count (shown once per environment)
-- `Resources Type`: Type of resource (application, service, etc.)
-- `Nor_of Resources`: Total number of this resource type
-- `Enabled_Resources`: Number of enabled resources
-- `Normal_Resources`: Count of normal resources
-- `Provided_Resources`: Count of provided resources
-- `Inherited_Resources`: Count of resources inherited from base
-- `Base_Resources`: Count of base resources (if present)
-- `Substack_Resources`: Count of substack resources (if present)
+#### Column Descriptions
+- **Customer**: Name of the customer
+- **Environment**: Cluster environment name
+- **Total number of Resources**: Total count (shown once per environment)
+- **Resources Type**: Type of resource (application, service, etc.)
+- **Nor_of Resources**: Total number of this resource type
+- **Enabled_Resources**: Number of enabled resources
+- **Normal_Resources**: Count of normal resources
+- **Provided_Resources**: Count of provided resources
+- **Inherited_Resources**: Count of resources inherited from base
+- **Base_Resources**: Count of base resources (if present)
+- **Substack_Resources**: Count of substack resources (if present)
 
-## Resource Type Detection
-
-The tool identifies different resource types based on:
-- Metadata labels
-- Resource annotations
-- Resource info properties
-- Inheritance flags
-
-### Detection Logic
-
-- **Base Resources**: Identified by:
-  - `resource.facets.cloud/type: base`
-  - `type: base`
-  - Base flags in resource info
-
-- **Substack Resources**: Identified by:
-  - `resource.facets.cloud/type: substack`
-  - `type: substack`
-  - Substack flags in resource info
-
-- **Inherited Resources**: Identified by:
-  - `inheritFromBase: true` in resource info
-
-- **Provided Resources**: Identified by:
-  - `resource.facets.cloud/type: provided`
-  - `type: provided`
-  - Provided flags in resource info
-
-## Excel Formatting
-
-The output Excel file includes:
+#### Formatting Features
 - Blue header styling
 - Auto-filtered columns
 - Auto-adjusted column widths
 - Clear environment grouping with spacing
 - Border formatting for all cells
 - Centered headers and left-aligned data
+- Empty rows between clusters for readability
+
+## Resource Type Detection
+
+The tool identifies different resource types based on various indicators:
+
+### Detection Logic
+
+#### Base Resources
+Identified by:
+- `resource.facets.cloud/type: base`
+- `type: base`
+- Base flags in resource info
+
+#### Substack Resources
+Identified by:
+- `resource.facets.cloud/type: substack`
+- `type: substack`
+- Substack flags in resource info
+
+#### Inherited Resources
+Identified by:
+- `inheritFromBase: true` in resource info
+
+#### Provided Resources
+Identified by:
+- `resource.facets.cloud/type: provided`
+- `type: provided`
+- Provided flags in resource info
 
 ## Error Handling
 
-The tool includes error handling for:
+The script includes robust error handling for common scenarios:
+
 - API connection issues
 - Missing resources
 - Invalid configurations
 - Authentication failures
+- Network connectivity issues
+- Missing or inaccessible clusters
 
-## Contributing
+If any errors occur, the script will:
+1. Display meaningful error messages
+2. Continue processing where possible
+3. Exit gracefully if critical errors occur
 
-Feel free to submit issues, fork the repository, and create pull requests for any improvements.
+## Troubleshooting
 
-## License
+1. If no clusters are found:
+   - Verify your Control Plane URL
+   - Check your credentials
+   - Ensure you have proper permissions
 
-[Specify your license here]
+2. If the script fails to connect:
+   - Check your internet connection
+   - Verify the Control Plane URL is accessible
+   - Ensure your token is valid and not expired
+
+3. For authentication errors:
+   - Verify your username format
+   - Check if your token is still valid
+   - Ensure you have the necessary permissions
+
